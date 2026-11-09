@@ -28,7 +28,7 @@
 * **Mixed pixels.** Spectral–spatial fusion (EMIT + PlanetScope to a 4-m hyperspectral product) and machine-learning upscaling from uncrewed aerial system (UAS) classifications to EMIT pixels provide practical routes to sub-pixel fractional cover of biocrust types.
 * **From maps to mechanism.** Coordinated ground observations through the global CrustNet network of 64 monitoring sites provide the calibration and validation backbone needed to move from static maps to monitoring of disturbance, degradation, recovery and climate-driven community change, and to constrain models of carbon, nitrogen, water and dust.
 
-This repository contains the Python scripts that generate the figures of the Perspective. The underlying datasets are described below and are not redistributed here (see [Data availability](#data-availability)).
+This repository contains the Python scripts that generate the figures of the Perspective (`src_code/`) and reduced-size previews of the figures (`figs/`). The underlying datasets are not redistributed here (see [Data availability](#data-availability)).
 
 <img src="figs/Fig4.png" title="" alt="" data-align="center">
 <p align="center"><b>Fig. 4.</b> Cross-platform evaluation of biocrust-sensitive spectral indices from landscape to global scales: PACE OCI monthly composite over global drylands (a), EMIT mosaic of the Colorado Plateau (b) and AVIRIS-5 flight lines (c), all shown with the same four-index colour composite (CI, SCI, SCAI, BOMI).</p>
@@ -36,13 +36,13 @@ This repository contains the Python scripts that generate the figures of the Per
 ## Figures and the analyses behind them
 | Figure | Script | Content | Main inputs |
 |---|---|---|---|
-| Fig. 1 | [plot_fig1_aridity.py](plot_fig1_aridity.py), [plot_fig1_spectra.py](plot_fig1_spectra.py), `plot_fig1.pptx` | Conceptual diagram of multiscale hyperspectral monitoring of biocrusts; global dryland map and mean ± 1 s.d. field spectra of the four biocrust types, assembled in PowerPoint | TerraClimate aridity index (4 km) reclassified into UNEP classes; Castle Valley field spectra |
-| Fig. 2 | [plot_fig2.py](plot_fig2.py) | Castle Valley climate-manipulation experiment: contact-probe spectra of LtCy, DkCy, lichen and moss with pigment absorption regions (a.1), random-forest feature importance (a.2), estimated vs. measured fractional cover (b) and treatment responses of successional stages and functional types (c) | ASD contact-probe library (n = 36 per type), random-forest importance and fine-tuned 1D-CNN estimates from the companion study ([Castle_valley_biocrust](https://github.com/FujiangJi/Castle_valley_biocrust)) |
-| Fig. 3 | [plot_fig3.py](plot_fig3.py) | Global biocrust spectral library of eight dryland sites: dry and wet class-mean spectra with site-specific dominant wavelengths (PLS-R variable importance in projection) and their cross-site ranges (a); CI, SCI, BOMI and SCAI by biocrust type across sites (b) | Spectral library workbooks compiled by A. Karnieli (Negev, Namib, Colorado Plateau, Las Amoladeras, El Cautivo, Soebatsfontein, Gurbantünggüt, Wajir) |
-| Fig. 4 | [plot_fig4.py](plot_fig4.py) | Four-index colour composite from PACE OCI (May 2025 monthly composite, drylands only), EMIT (Colorado Plateau mosaic, Oct 2023 – Dec 2025) and AVIRIS-5 (8 May 2025); also writes `Fig4_SI_single_indices` with each index on its own | Index GeoTIFFs computed from PACE OCI L2, EMIT L2A reflectance and AVIRIS-5 reflectance; TerraClimate aridity classes |
-| Fig. 5 | [plot_fig5.py](plot_fig5.py) | Spatial enhancement of EMIT observations: RGB composites and CI, SCI, BOMI, SCAI from the original 60-m EMIT image and the fused 4-m hyperspectral image (EMIT + PlanetScope, deep hierarchical fusion network) | EMIT and fused index GeoTIFFs; sampling-scheme tiles |
-| Fig. 6 | [plot_fig6.py](plot_fig6.py) | Upscaling biocrust fractional cover from UAS observations to EMIT: UAS orthomosaic and level-1 classification, class fractions per 60-m EMIT cell, EMIT-scale surface-composition and fractional-cover maps | UAS RGB orthomosaic (1 cm) and random-forest classification (2 cm); EMIT L2A scene of 5 April 2025 and its predicted cover |
-| Fig. 7 | [plot_fig7.py](plot_fig7.py) | Global distribution of the 64 CrustNet monitoring sites and the eight spectral-library sites over the PACE four-index composite of Fig. 4a; representative field photographs | CrustNet site coordinates (https://crustnet.org); PACE composite via `plot_fig4.py` |
+| Fig. 1 | [plot_fig1_aridity.py](src_code/plot_fig1_aridity.py), [plot_fig1_spectra.py](src_code/plot_fig1_spectra.py), [plot_fig1.pptx](src_code/plot_fig1.pptx) | Conceptual diagram of multiscale hyperspectral monitoring of biocrusts; global dryland map and mean ± 1 s.d. field spectra of the four biocrust types, assembled in PowerPoint | TerraClimate aridity index (4 km) reclassified into UNEP classes; Castle Valley field spectra |
+| Fig. 2 | [plot_fig2.py](src_code/plot_fig2.py) | Castle Valley climate-manipulation experiment: contact-probe spectra of LtCy, DkCy, lichen and moss with pigment absorption regions (a.1), random-forest feature importance (a.2), estimated vs. measured fractional cover (b) and treatment responses of successional stages and functional types (c) | ASD contact-probe library (n = 36 per type), random-forest importance and fine-tuned 1D-CNN estimates from the companion study ([Castle_valley_biocrust](https://github.com/FujiangJi/Castle_valley_biocrust)) |
+| Fig. 3 | [plot_fig3.py](src_code/plot_fig3.py) | Global biocrust spectral library of eight dryland sites: dry and wet class-mean spectra with site-specific dominant wavelengths (PLS-R variable importance in projection) and their cross-site ranges (a); CI, SCI, BOMI and SCAI by biocrust type across sites (b) | Spectral library workbooks compiled by A. Karnieli (Negev, Namib, Colorado Plateau, Las Amoladeras, El Cautivo, Soebatsfontein, Gurbantünggüt, Wajir) |
+| Fig. 4 | [plot_fig4.py](src_code/plot_fig4.py) | Four-index colour composite from PACE OCI (May 2025 monthly composite, drylands only), EMIT (Colorado Plateau mosaic, Oct 2023 – Dec 2025) and AVIRIS-5 (8 May 2025); also writes `Fig4_SI_single_indices` with each index on its own | Index GeoTIFFs computed from PACE OCI L2, EMIT L2A reflectance and AVIRIS-5 reflectance; TerraClimate aridity classes |
+| Fig. 5 | [plot_fig5.py](src_code/plot_fig5.py) | Spatial enhancement of EMIT observations: RGB composites and CI, SCI, BOMI, SCAI from the original 60-m EMIT image and the fused 4-m hyperspectral image (EMIT + PlanetScope, deep hierarchical fusion network) | EMIT and fused index GeoTIFFs; sampling-scheme tiles |
+| Fig. 6 | [plot_fig6.py](src_code/plot_fig6.py) | Upscaling biocrust fractional cover from UAS observations to EMIT: UAS orthomosaic and level-1 classification, class fractions per 60-m EMIT cell, EMIT-scale surface-composition and fractional-cover maps | UAS RGB orthomosaic (1 cm) and random-forest classification (2 cm); EMIT L2A scene of 5 April 2025 and its predicted cover |
+| Fig. 7 | [plot_fig7.py](src_code/plot_fig7.py) | Global distribution of the 64 CrustNet monitoring sites and the eight spectral-library sites over the PACE four-index composite of Fig. 4a; representative field photographs | CrustNet site coordinates (https://crustnet.org); PACE composite via `plot_fig4.py` |
 
 <img src="figs/Fig7.png" title="" alt="" data-align="center">
 <p align="center"><b>Fig. 7.</b> CrustNet monitoring sites (red circles) and the eight spectral-library sites of Fig. 3 (magenta stars) over the PACE OCI four-index composite of global drylands.</p>
@@ -67,10 +67,10 @@ All figures are sized for a double-column layout (183 mm wide), use Arial at 5�
 * Clone this repository
   ```
   git clone https://github.com/FujiangJi/biocrust_perspective.git
-  cd biocrust_perspective
+  cd biocrust_perspective/src_code
   ```
 * Point the `DATA_DIR` and `FIG_DIR` constants at the top of each script to your data and output folders.
-* Generate the figures
+* Generate the figures (run from `src_code/`, because `plot_fig3.py` and `plot_fig7.py` import the other scripts)
   ```
   python plot_fig1_aridity.py     # aridity classes + global dryland map (Fig. 1 background)
   python plot_fig1_spectra.py     # mean ± 1 s.d. spectra of the four biocrust types (Fig. 1 inset)
@@ -81,19 +81,20 @@ All figures are sized for a double-column layout (183 mm wide), use Arial at 5�
   python plot_fig6.py             # Fig. 6  (needs the UAS orthomosaic)
   python plot_fig7.py             # Fig. 7  (imports plot_fig3 and plot_fig4)
   ```
-  Fig. 1 is assembled from these outputs in `plot_fig1.pptx`. `plot_fig4.py` caches its decimated display arrays (`fig4_display_cache.npz`) after the first run; delete the cache to re-read the rasters.
+  Fig. 1 is assembled from these outputs in [plot_fig1.pptx](src_code/plot_fig1.pptx). `plot_fig4.py` caches its decimated display arrays (`fig4_display_cache.npz`) after the first run; delete the cache to re-read the rasters.
 
 ## Description of files in this repository
-* **[plot_fig1_aridity.py](plot_fig1_aridity.py)**: reclassifies the TerraClimate aridity index into the five UNEP classes, writes global and western-US class rasters and renders the global dryland map used in Fig. 1 (and as the dryland mask in Figs 4 and 7).
-* **[plot_fig1_spectra.py](plot_fig1_spectra.py)**: mean ± 1 s.d. field reflectance of LtCy, DkCy, lichen and moss for the Fig. 1 conceptual diagram.
-* **`plot_fig1.pptx`**: PowerPoint assembly of the Fig. 1 conceptual diagram.
-* **[plot_fig2.py](plot_fig2.py)**: Castle Valley spectral fingerprints with pigment absorption regions, random-forest feature importance ridgeline, estimated vs. measured cover with OLS fits and 95% confidence bands, and treatment response curves; also defines the shared Nature-style `rcParams`.
-* **[plot_fig3.py](plot_fig3.py)**: loads the eight-site spectral library, computes CI, SCI, BOMI and SCAI from class-mean spectra, and draws the per-site spectra with dominant-wavelength strips and the index distributions by biocrust type.
-* **[plot_fig4.py](plot_fig4.py)**: multiscale four-index composite (PACE → EMIT → AVIRIS-5) with a shared colour key; provides the composite, projection and key helpers reused by Fig. 7.
-* **[plot_fig5.py](plot_fig5.py)**: EMIT vs. fused 4-m hyperspectral imagery, RGB composites and index maps with linked zoom insets.
-* **[plot_fig6.py](plot_fig6.py)**: UAS-to-EMIT upscaling of biocrust fractional cover with ternary surface-composition map and per-class cover maps.
-* **[plot_fig7.py](plot_fig7.py)**: CrustNet and spectral-library sites over the PACE composite, with field photographs.
-* **`figs/`**: reduced-size previews of Figs 2–7 for this README.
+* **`src_code/`**: figure scripts, one per figure.
+  * **[plot_fig1_aridity.py](src_code/plot_fig1_aridity.py)**: reclassifies the TerraClimate aridity index into the five UNEP classes, writes global and western-US class rasters and renders the global dryland map used in Fig. 1 (and as the dryland mask in Figs 4 and 7).
+  * **[plot_fig1_spectra.py](src_code/plot_fig1_spectra.py)**: mean ± 1 s.d. field reflectance of LtCy, DkCy, lichen and moss for the Fig. 1 conceptual diagram.
+  * **[plot_fig1.pptx](src_code/plot_fig1.pptx)**: PowerPoint assembly of the Fig. 1 conceptual diagram.
+  * **[plot_fig2.py](src_code/plot_fig2.py)**: Castle Valley spectral fingerprints with pigment absorption regions, random-forest feature importance ridgeline, estimated vs. measured cover with OLS fits and 95% confidence bands, and treatment response curves; also defines the shared Nature-style `rcParams`.
+  * **[plot_fig3.py](src_code/plot_fig3.py)**: loads the eight-site spectral library, computes CI, SCI, BOMI and SCAI from class-mean spectra, and draws the per-site spectra with dominant-wavelength strips and the index distributions by biocrust type.
+  * **[plot_fig4.py](src_code/plot_fig4.py)**: multiscale four-index composite (PACE → EMIT → AVIRIS-5) with a shared colour key; provides the composite, projection and key helpers reused by Fig. 7.
+  * **[plot_fig5.py](src_code/plot_fig5.py)**: EMIT vs. fused 4-m hyperspectral imagery, RGB composites and index maps with linked zoom insets.
+  * **[plot_fig6.py](src_code/plot_fig6.py)**: UAS-to-EMIT upscaling of biocrust fractional cover with ternary surface-composition map and per-class cover maps.
+  * **[plot_fig7.py](src_code/plot_fig7.py)**: CrustNet and spectral-library sites over the PACE composite, with field photographs.
+* **`figs/`**: reduced-size previews of Figs 2–7 for this README; the full-resolution figures are written by the scripts to `FIG_DIR`.
 
 ## Data availability
 The field-spectroscopy, UAS, airborne (AVIRIS-5) and satellite (EMIT, PACE) datasets underlying the proof-of-concept figures will be deposited in a figshare repository upon publication (link to be added). The eight-site spectral library is described in Karnieli et al. (in review) and is available from the authors on reasonable request.

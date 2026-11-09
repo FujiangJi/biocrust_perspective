@@ -31,7 +31,7 @@
 This repository contains the Python scripts that generate the figures of the Perspective (`src_code/`) and reduced-size previews of the figures (`figs/`). The underlying datasets are not redistributed here (see [Data availability](#data-availability)).
 
 <img src="figs/Fig4.png" title="" alt="" data-align="center">
-<p align="center"><b>Fig. 4.</b> Cross-platform evaluation of biocrust-sensitive spectral indices from landscape to global scales: PACE OCI monthly composite over global drylands (a), EMIT mosaic of the Colorado Plateau (b) and AVIRIS-5 flight lines (c), all shown with the same four-index colour composite (CI, SCI, SCAI, BOMI).</p>
+<p align="center">Cross-platform evaluation of biocrust-sensitive spectral indices from landscape to global scales: PACE OCI monthly composite over global drylands (a), EMIT mosaic of the Colorado Plateau (b) and AVIRIS-5 flight lines (c), all shown with the same four-index colour composite (CI, SCI, SCAI, BOMI).</p>
 
 ## Figures and the analyses behind them
 | Figure | Script | Content | Main inputs |
@@ -45,7 +45,7 @@ This repository contains the Python scripts that generate the figures of the Per
 | Fig. 7 | [plot_fig7.py](src_code/plot_fig7.py) | Global distribution of the 64 CrustNet monitoring sites and the eight spectral-library sites over the PACE four-index composite of Fig. 4a; representative field photographs | CrustNet site coordinates (https://crustnet.org); PACE composite via `plot_fig4.py` |
 
 <img src="figs/Fig7.png" title="" alt="" data-align="center">
-<p align="center"><b>Fig. 7.</b> CrustNet monitoring sites (red circles) and the eight spectral-library sites of Fig. 3 (magenta stars) over the PACE OCI four-index composite of global drylands.</p>
+<p align="center">CrustNet monitoring sites (red circles) and the eight spectral-library sites (magenta stars) over the PACE OCI four-index composite of global drylands.</p>
 
 ## Biocrust spectral indices
 The indices used in Figs 3–5 and 7 follow Karnieli et al. (in review) and Noy et al. (2025); band names denote mean reflectance in the band:
@@ -94,7 +94,6 @@ All figures are sized for a double-column layout (183 mm wide), use Arial at 5�
   * **[plot_fig5.py](src_code/plot_fig5.py)**: EMIT vs. fused 4-m hyperspectral imagery, RGB composites and index maps with linked zoom insets.
   * **[plot_fig6.py](src_code/plot_fig6.py)**: UAS-to-EMIT upscaling of biocrust fractional cover with ternary surface-composition map and per-class cover maps.
   * **[plot_fig7.py](src_code/plot_fig7.py)**: CrustNet and spectral-library sites over the PACE composite, with field photographs.
-* **`figs/`**: reduced-size previews of Figs 2–7 for this README; the full-resolution figures are written by the scripts to `FIG_DIR`.
 
 ## Data availability
 The field-spectroscopy, UAS, airborne (AVIRIS-5) and satellite (EMIT, PACE) datasets underlying the proof-of-concept figures will be deposited in a figshare repository upon publication (link to be added). The eight-site spectral library is described in Karnieli et al. (in review) and is available from the authors on reasonable request.

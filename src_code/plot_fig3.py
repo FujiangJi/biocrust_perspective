@@ -425,7 +425,7 @@ def main():
     # b: indices from the dry spectra, one symbol per site
     top = top - 2 * a_h - ROW_GAP - XLAB - B_HEAD
     heading(fig, 0.12, top + 0.16 + B_FORMULA_H + B_KEY, "b",
-            "Biocrust indices built from the preserved regions, by biocrust type across sites")
+            "Biocrust indices built from the preserved regions, by surface class across sites")
     site_key(fig, LEFT, top + 0.16 + B_FORMULA_H + 0.02)
     axes = [axes_in(fig, LEFT + k * (b_w + b_gap), top - b_h, b_w, b_h) for k in range(4)]
     panel_indices(axes, lib)

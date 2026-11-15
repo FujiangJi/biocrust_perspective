@@ -249,6 +249,7 @@ clean = f2.clean
 REGION_COLOR = "#f6c66d"     # preserved regions in the strip above each panel (amber)
 SD_ALPHA = 0.15              # ± 1 SD band around a class mean (class colour)
 BOX_ALPHA = 0.30             # b: box fill in the class colour
+BOX_W = 0.66                 # b: box width (class spacing 1.0; site symbols spread over ±0.16)
 B_TITLE_PAD = 15             # b: title pad (points) leaves room for the formula line (BOMI's radical is tall)
 B_FORMULA_H = 0.18           # inches reserved for that formula line in the layout
 A_LW = 1.2                   # a: spectra line width (dry and wet)
@@ -315,30 +316,38 @@ def panel_site(ax, site, spectra, ranges, k, ylabel=False, xlabel=False):
     print(f"  a.{k + 1} {site:17s} {n_lines} spectra; Table 4 nm = {TABLE4[site]}; " + ", ".join(ns))
 
 
+def site_marker(ax, x, y, site, cond, **kw):
+    """One site symbol: filled = dry, hollow (white face, site-colour edge) = wet."""
+    color, marker, size = SITE_STYLE[site]
+    if cond == "Wet":
+        ax.scatter(x, y, s=size, marker=marker, facecolor="white", edgecolor=color, linewidth=0.7, **kw)
+    else:
+        ax.scatter(x, y, s=size, marker=marker, color=color, edgecolor="black", linewidth=0.3, **kw)
+
+
 def panel_indices(axes, lib):
-    """Per index: one neutral box per biocrust type across sites (B_CONDITIONS spectra), one symbol per site."""
+    """Per index: one box per surface class across sites (dry and wet pooled), one symbol per site and
+    hydration state (filled dry, hollow wet)."""
     values = {}
     for site, spectra in lib.items():
         for (cls, cond), s in spectra.items():
             if cond not in B_CONDITIONS:
                 continue
             for name, v in crust_indices(s["mean"]).items():
-                values.setdefault((name, cls), []).append((site, v))
+                values.setdefault((name, cls), []).append((site, cond, v))
     sites = list(SITES)
     for k, (ax, (name, _, formula)) in enumerate(zip(axes, INDICES)):
         for i, cls in enumerate(CLASSES):
             pts = values.get((name, cls), [])
-            vals = [v for _, v in pts]
+            vals = [v for _, _, v in pts]
             color = CLASS_COLORS[cls]                      # box in the type's colour of panel a
-            ax.boxplot([vals], positions=[i], widths=0.5, showfliers=False, patch_artist=True,
+            ax.boxplot([vals], positions=[i], widths=BOX_W, showfliers=False, patch_artist=True,
                        boxprops=dict(facecolor=matplotlib.colors.to_rgba(color, BOX_ALPHA), edgecolor=color, lw=0.6),
                        whiskerprops=dict(lw=0.6, color=color), capprops=dict(lw=0.6, color=color),
                        medianprops=dict(lw=1.0, color="black"), zorder=2)
-            for site, v in pts:
-                color, marker, size = SITE_STYLE[site]
-                jitter = (sites.index(site) - (len(sites) - 1) / 2) * 0.045
-                ax.scatter(i + jitter, v, s=size, marker=marker, color=color, edgecolor="black", linewidth=0.3,
-                           zorder=4)
+            for site, cond, v in pts:
+                x = i + (sites.index(site) - (len(sites) - 1) / 2) * 0.045
+                site_marker(ax, x, v, site, cond, zorder=4)
             ax.text(i, -0.03, str(len(vals)), transform=ax.get_xaxis_transform(), ha="center", va="top",
                     fontsize=4.5, color="#555555")
         ax.text(-0.6, -0.03, "n", transform=ax.get_xaxis_transform(), ha="left", va="top", fontsize=4.5,
@@ -356,15 +365,21 @@ def panel_indices(axes, lib):
         clean(ax)
     for name, _, _ in INDICES:
         print(f"  b: {name:4s} " + " | ".join(
-            f"{cls}: " + ", ".join(f"{s} {v:.3f}" for s, v in values.get((name, cls), [])) for cls in CLASSES))
+            f"{cls}: " + ", ".join(f"{s} {c[0]} {v:.3f}" for s, c, v in values.get((name, cls), [])) for cls in CLASSES))
 
 
 def site_key(fig, x, y):
-    """One row of site symbols (b), lower-left corner at (x, y) inches."""
+    """One row: site symbols, then filled = dry / hollow = wet (b), lower-left corner at (x, y) inches."""
     W, H = fig.get_size_inches()
     handles = [Line2D([], [], ls="none", marker=m, markersize=np.sqrt(s) * 1.15, markerfacecolor=c,
                       markeredgecolor="black", markeredgewidth=0.3) for c, m, s in SITE_STYLE.values()]
-    fig.legend(handles=handles, labels=list(SITE_STYLE), loc="lower left", bbox_to_anchor=(x / W, y / H),
+    labels = list(SITE_STYLE)
+    handles += [Line2D([], [], ls="none", marker="o", markersize=3.4, markerfacecolor="#555555",
+                       markeredgecolor="black", markeredgewidth=0.3),
+                Line2D([], [], ls="none", marker="o", markersize=3.4, markerfacecolor="white",
+                       markeredgecolor="#555555", markeredgewidth=0.7)]
+    labels += ["Dry", "Wet"]
+    fig.legend(handles=handles, labels=labels, loc="lower left", bbox_to_anchor=(x / W, y / H),
                ncol=len(handles), frameon=False, handlelength=1.2, columnspacing=1.0, handletextpad=0.4,
                borderaxespad=0, borderpad=0, fontsize=KEY_FONT)
 

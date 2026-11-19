@@ -1,13 +1,18 @@
-"""Figure 8: global distribution of CrustNet monitoring sites and representative field activities.
+"""Figure 8: global distribution of biocrust monitoring sites and representative field activities.
 
-a  CrustNet sites (n = 64) over the PACE OCI four-index composite of Fig. 5a (May 2025 monthly composite,
-   drylands only, same colour key); all sites are shown, including those outside the drylands
+a  CrustNet sites (n = 64), CRUST R-Forze sites (n = 21) and the spectral-library sites of Fig. 3 over the
+   PACE OCI four-index composite of Fig. 5a (May 2025 monthly composite, drylands only, same colour key);
+   all sites are shown, including those outside the drylands
 b  representative field activities at CrustNet sites (three photographs)
 
 Data:
   1_data/crustnet_sites.csv          site codes and coordinates (columns: code, lat, lon), extracted from the
                                      CrustNet node map (https://crustnet.org/CrustNet_Map5.html -> embedded
                                      leaflet/htmlwidgets payload)
+  1_data/8_Fig8_data/sites_coordinates_library.xlsx
+                                     CRUST R-Forze plots (columns: Country, Site, zone, Longitud, Latitud,
+                                     Altitude); the Moab row is stored with longitude and latitude swapped and
+                                     without the western sign, corrected in RFORZE_FIXES
   PACE composite and dryland mask    read through plot_fig5.py (its display cache), so colours match Fig. 5a
   1_data/8_Fig8_data/image1-3.png    field photographs
 
@@ -20,6 +25,7 @@ import csv
 import os
 
 import numpy as np
+import pandas as pd
 from PIL import Image
 import matplotlib
 matplotlib.use("Agg")
@@ -34,6 +40,9 @@ DATA_DIR = "/Users/jifujiang/Desktop/2_University_of_Arizona/6_perspective_biocr
 PHOTO_DIR = os.path.join(DATA_DIR, "8_Fig8_data")
 FIG_DIR = "/Users/jifujiang/Desktop/2_University_of_Arizona/6_perspective_biocrusts/figures"
 SITES_CSV = os.path.join(DATA_DIR, "crustnet_sites.csv")
+RFORZE_XLSX = os.path.join(PHOTO_DIR, "sites_coordinates_library.xlsx")
+# workbook rows whose coordinates are wrong as stored: site -> (lon, lat)
+RFORZE_FIXES = {"Moab": (-109.683221, 38.720160)}    # stored as lon 38.72, lat 109.68 (swapped, no W sign)
 
 # field photographs: (file, square crop box as fractions of the image (x0, y0, x1, y1))
 PHOTOS = [
@@ -45,8 +54,10 @@ PHOTOS = [
 SITE_COLOR = "#d7301f"
 SITE_EFFECTS = [pe.Stroke(linewidth=1.5, foreground="#1a1a1a"), pe.Normal()]   # dark ring outside the white edge
 LIB_COLOR = "#ff00ff"      # spectral-library sites of Fig. 3: magenta stars
+RFORZE_COLOR = "#111111"   # CRUST R-Forze sites: black triangles
 LIB_SITES = {name: s["lonlat"] for name, s in f3.SITES.items()}
-KEY_AT = (-125, -21)       # lon, lat of the colour key's centre (empty South Pacific); two-line site legend below it
+KEY_AT = (-127, -18)       # lon, lat of the colour key's centre (empty South Pacific); three-line site legend below it
+KEY_LEGEND_GAP = 0.20      # inches between the key's lower labels and the site legend
 
 MM = 1 / 25.4
 FIG_W = 183 * MM
@@ -72,6 +83,21 @@ def read_sites(path):
     with open(path) as f:
         rows = list(csv.DictReader(f))
     return [float(r["lon"]) for r in rows], [float(r["lat"]) for r in rows]
+
+
+def read_rforze(path):
+    """CRUST R-Forze plots as (lons, lats); one row per plot, several plots may share a site."""
+    df = pd.read_excel(path)
+    lons, lats = [], []
+    for _, r in df.iterrows():
+        lon, lat = RFORZE_FIXES.get(r["Site"], (float(r["Longitud"]), float(r["Latitud"])))
+        if r["Site"] in RFORZE_FIXES:
+            print(f"  corrected {r['Site']}: stored ({r['Longitud']}, {r['Latitud']}) -> lon {lon}, lat {lat}")
+        assert -180 <= lon <= 180 and -90 <= lat <= 90, (r["Site"], lon, lat)
+        lons.append(lon)
+        lats.append(lat)
+    print(f"  CRUST R-Forze: {len(lons)} plots at {df['Site'].nunique()} sites in {df['Country'].nunique()} countries")
+    return lons, lats
 
 
 def read_photo(fname, box):
@@ -100,6 +126,7 @@ def main():
     os.makedirs(FIG_DIR, exist_ok=True)
     plt.rcParams.update(NATURE_RC)
     lons, lats = read_sites(SITES_CSV)
+    rf_lons, rf_lats = read_rforze(RFORZE_XLSX)
     photos = [read_photo(f, box) for f, box in PHOTOS]
     rgba, transform, aridity = pace_composite()
 
@@ -112,30 +139,35 @@ def main():
 
     # a: PACE composite over drylands, CrustNet sites on top
     a_bottom = H - HEADING - a_h
-    heading(fig, SIDE, H - HEADING + 0.08, "a", "Global distribution of CrustNet monitoring sites")
+    heading(fig, SIDE, H - HEADING + 0.08, "a", "Global distribution of CrustNet and CRUST R-Forze monitoring sites")
     ax = f5.axes_in(fig, SIDE, a_bottom, a_w, a_h, projection=f5.ROBINSON)
     f5.draw_global(ax, rgba, transform, aridity)
     f5.global_gridlines(fig, ax, size=MAP_LABEL_SIZE)
     ax.spines["geo"].set_linewidth(1.0)
     ax.scatter(lons, lats, transform=f5.PC, s=16, c=SITE_COLOR, edgecolor="white", linewidth=0.5, zorder=8,
                path_effects=SITE_EFFECTS)
+    ax.scatter(rf_lons, rf_lats, transform=f5.PC, s=24, marker="^", c=RFORZE_COLOR, edgecolor="white",
+               linewidth=0.5, zorder=9)
     lib_lons, lib_lats = zip(*LIB_SITES.values())
     ax.scatter(lib_lons, lib_lats, transform=f5.PC, s=48, marker="*", c=LIB_COLOR, edgecolor="black",
-               linewidth=0.5, zorder=9)
+               linewidth=0.5, zorder=10)
     print("  library sites:", ", ".join(LIB_SITES))
 
-    # colour key (same as Fig. 5) in the empty South Pacific, site legend centred below it
+    # colour key (same as Fig. 5) in the empty South Pacific, site legend below it, left-aligned with the key
     key = 0.55
     kx, ky = lonlat_to_inches(ax, *KEY_AT)
     f5.draw_key(f5.axes_in(fig, kx - key / 2, ky - key / 2, key, key), fontsize=6)
     site = Line2D([], [], ls="none", marker="o", markersize=4.5, markerfacecolor=SITE_COLOR,
                   markeredgecolor="white", markeredgewidth=0.5, path_effects=SITE_EFFECTS)
+    rforze = Line2D([], [], ls="none", marker="^", markersize=5.2, markerfacecolor=RFORZE_COLOR,
+                    markeredgecolor="white", markeredgewidth=0.5)
     lib = Line2D([], [], ls="none", marker="*", markersize=7.5, markerfacecolor=LIB_COLOR, markeredgecolor="black",
                  markeredgewidth=0.5)
-    fig.legend(handles=[site, lib],
-               labels=[f"CrustNet site (n = {len(lons)})", f"Spectral library site (n = {len(LIB_SITES)})"],
-               loc="upper center", bbox_to_anchor=((kx + 0.15) / W, (ky - key / 2 - 0.16) / H), frameon=False,
-               handlelength=1.0, handletextpad=0.4, labelspacing=0.5, borderaxespad=0, borderpad=0)
+    fig.legend(handles=[site, rforze, lib],
+               labels=[f"CrustNet site (n = {len(lons)})", f"CRUST R-Forze site (n = {len(rf_lons)})",
+                       f"Spectral library site (n = {len(LIB_SITES)})"],
+               loc="upper left", bbox_to_anchor=((kx - key / 2) / W, (ky - key / 2 - KEY_LEGEND_GAP) / H),
+               frameon=False, handlelength=1.0, handletextpad=0.4, labelspacing=0.3, borderaxespad=0, borderpad=0)
 
     # b: field photographs, aligned with the map
     b_top = a_bottom - LON_LABELS - HEADING

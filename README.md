@@ -26,7 +26,7 @@
 * **Spectral basis.** Pigments (scytonemin, carotenoids, phycobilins, chlorophyll a), hydration state, organic matter and mineral substrates imprint diagnostic features across the visible-to-shortwave-infrared spectrum (~380–2,500 nm). Field spectra from the Castle Valley climate-manipulation experiment (Colorado Plateau, USA) and a spectral library of eight dryland sites on four continents show that the same spectral regions matter across sites, and that hyperspectral models recover experimentally induced changes in biocrust fractional cover.
 * **Multiscale observing system.** Four biocrust-sensitive indices (cyanobacterial crust index CI, scytonemin index SCI, biocrust organic matter index BOMI and satellite cellulose absorption index SCAI) are computed consistently from PACE (global, ~1 km), EMIT (regional, 60 m) and AVIRIS-5 (landscape, ~10 m) observations, illustrating a nested system rather than a collection of instruments.
 * **Mixed pixels.** Spectral–spatial fusion (EMIT + PlanetScope to a 4-m hyperspectral product) and machine-learning upscaling from uncrewed aerial system (UAS) classifications to EMIT pixels provide practical routes to sub-pixel fractional cover of biocrust types.
-* **From maps to mechanism.** Coordinated ground observations through the global CrustNet network of 64 monitoring sites provide the calibration and validation backbone needed to move from static maps to monitoring of disturbance, degradation, recovery and climate-driven community change, and to constrain models of carbon, nitrogen, water and dust.
+* **From maps to mechanism.** Coordinated ground observations through global monitoring networks such as CrustNet (64 sites) and CRUST R-Forze (21 plots at 13 sites) provide the calibration and validation backbone needed to move from static maps to monitoring of disturbance, degradation, recovery and climate-driven community change, and to constrain models of carbon, nitrogen, water and dust.
 
 This repository contains the Python scripts that generate the figures of the Perspective (`src_code/`) and reduced-size previews of the figures (`figs/`). The underlying datasets are not redistributed here (see [Data availability](#data-availability)).
 
@@ -43,10 +43,10 @@ This repository contains the Python scripts that generate the figures of the Per
 | Fig. 5 | [plot_fig5.py](src_code/plot_fig5.py) | Four-index colour composite from PACE OCI (May 2025 monthly composite, drylands only), EMIT (Colorado Plateau mosaic, Oct 2023 – Dec 2025) and AVIRIS-5 (8 May 2025); also writes `Fig5_SI_single_indices` with each index on its own | Index GeoTIFFs computed from PACE OCI L2, EMIT L2A reflectance and AVIRIS-5 reflectance; TerraClimate aridity classes |
 | Fig. 6 | [plot_fig6.py](src_code/plot_fig6.py) | Spatial enhancement of EMIT observations: RGB composites and CI, SCI, BOMI, SCAI from the original 60-m EMIT image and the fused 4-m hyperspectral image (EMIT + PlanetScope, deep hierarchical fusion network) | EMIT and fused index GeoTIFFs; sampling-scheme tiles |
 | Fig. 7 | [plot_fig7.py](src_code/plot_fig7.py) | Upscaling biocrust fractional cover from UAS observations to EMIT: UAS orthomosaic and level-1 classification, class fractions per 60-m EMIT cell, EMIT-scale surface-composition and fractional-cover maps | UAS RGB orthomosaic (1 cm) and random-forest classification (2 cm); EMIT L2A scene of 5 April 2025 and its predicted cover |
-| Fig. 8 | [plot_fig8.py](src_code/plot_fig8.py) | Global distribution of the 64 CrustNet monitoring sites and the eight spectral-library sites over the PACE four-index composite of Fig. 5a; representative field photographs | CrustNet site coordinates (https://crustnet.org); PACE composite via `plot_fig5.py` |
+| Fig. 8 | [plot_fig8.py](src_code/plot_fig8.py) | Global distribution of the 64 CrustNet monitoring sites, the 21 CRUST R-Forze monitoring plots (13 sites in seven countries) and the eight spectral-library sites over the PACE four-index composite of Fig. 5a; representative field photographs | CrustNet site coordinates (https://crustnet.org); CRUST R-Forze plot coordinates (`sites_coordinates_library.xlsx`); PACE composite via `plot_fig5.py` |
 
 <img src="figs/Fig8.png" title="" alt="" data-align="center">
-<p align="center">CrustNet monitoring sites (red circles) and the eight spectral-library sites (magenta stars) over the PACE OCI four-index composite of global drylands.</p>
+<p align="center">CrustNet monitoring sites (red circles), CRUST R-Forze monitoring plots (black triangles) and the eight spectral-library sites (magenta stars) over the PACE OCI four-index composite of global drylands.</p>
 
 ## Biocrust spectral indices
 The indices used in Figs 3–6 and 8 follow Karnieli et al. (in review) and Noy et al. (2025); band names denote mean reflectance in the band:
@@ -95,7 +95,7 @@ All figures are sized for a double-column layout (183 mm wide), use Arial at 5�
   * **[plot_fig5.py](src_code/plot_fig5.py)**: multiscale four-index composite (PACE → EMIT → AVIRIS-5) with a shared colour key; provides the composite, projection and key helpers reused by Fig. 8.
   * **[plot_fig6.py](src_code/plot_fig6.py)**: EMIT vs. fused 4-m hyperspectral imagery, RGB composites and index maps with linked zoom insets.
   * **[plot_fig7.py](src_code/plot_fig7.py)**: UAS-to-EMIT upscaling of biocrust fractional cover with ternary surface-composition map and per-class cover maps.
-  * **[plot_fig8.py](src_code/plot_fig8.py)**: CrustNet and spectral-library sites over the PACE composite, with field photographs.
+  * **[plot_fig8.py](src_code/plot_fig8.py)**: CrustNet, CRUST R-Forze and spectral-library sites over the PACE composite, with field photographs. CRUST R-Forze plots are read from `sites_coordinates_library.xlsx` (one row per plot; the Moab row is stored with longitude and latitude swapped and is corrected in `RFORZE_FIXES`).
 
 ## Data availability
 The field-spectroscopy, UAS, airborne (AVIRIS-5) and satellite (EMIT, PACE) datasets underlying the proof-of-concept figures will be deposited in a figshare repository upon publication (link to be added). The eight-site spectral library is described in Karnieli et al. (in review) and is available from the authors on reasonable request.
@@ -117,5 +117,5 @@ wksmith@arizona.edu
 ## Credits
 * This research was supported by the National Aeronautics and Space Administration (NASA) Earth Surface Mineral Dust Source Investigation (EMIT) Science and Applications Team (Grant 80NSSC24K0858) and the U.S. Geological Survey (USGS) National Land Imaging (NLI) Program. Any use of trade, firm or product names is for descriptive purposes only and does not imply endorsement by the U.S. Government.
 * The Castle Valley climate-manipulation experiment is maintained by the USGS Southwest Biological Science Center.
-* The global biocrust spectral library was compiled by Arnon Karnieli and colleagues; CrustNet site information is provided by the CrustNet consortium (https://crustnet.org).
+* The global biocrust spectral library was compiled by Arnon Karnieli and colleagues; CrustNet site information is provided by the CrustNet consortium (https://crustnet.org); CRUST R-Forze site coordinates were provided by the CRUST R-Forze project.
 * EMIT data courtesy of NASA JPL and the LP DAAC; PACE OCI data courtesy of the NASA Ocean Biology DAAC; AVIRIS-5 data courtesy of NASA JPL.
